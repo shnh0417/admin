@@ -6,6 +6,9 @@ import { Header, Footer, Sidebar } from 'layouts';
 import Main from 'pages/Main';
 import About from 'pages/About';
 import Map from 'pages/map';
+import Nft from 'pages/nft';
+import MyNFT from 'pages/auth/nft/MyNFT';
+import ThreeModel from 'pages/ThreeModel';
 
 import Global from 'styles/Global';
 
@@ -19,8 +22,11 @@ function App() {
                <Sidebar />
                <Routes>
                   <Route path="/" element={<Main />} />
+                  <Route path="/nft" element={<Nft />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/map" element={<Map />} />
+                  <Route path="/mynft" element={<MyNFT />} />
+                  <Route path="/three" element={<ThreeModel />} />
                </Routes>
             </AppContainer>
             <Footer></Footer>

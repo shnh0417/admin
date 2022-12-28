@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
 
 const PageNavbar = () => {
    return (
-      <PageNavbarWrapper>
+      <PageNavbarWrapper initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
          <PageNavbarDiv>Menu1</PageNavbarDiv>
          <PageNavbarDiv>Menu1</PageNavbarDiv>
          <PageNavbarDiv>Menu1</PageNavbarDiv>
@@ -11,16 +12,17 @@ const PageNavbar = () => {
    );
 };
 
-const PageNavbarWrapper = styled.div`
+const PageNavbarWrapper = styled(motion.div)`
    display: flex;
    flex-direction: column;
    justify-content: space-between;
    align-items: flex-start;
    justify-content: flex-start;
-   padding-top: 20px;
-   padding-left: 10px;
+   padding: 20px 10px 20px 10px;
    max-width: 200px;
    width: 200px;
+   height: 100vh;
+   background-color: #13181d;
    border-right: 1px solid #272727;
 `;
 

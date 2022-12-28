@@ -2,7 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { FaMapMarkedAlt as MapIcon } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import {
+   FaMapMarkedAlt as MapIcon,
+   FaBtc as CoinIcon,
+   FaBuromobelexperte as NftIcon,
+   FaDigitalOcean as ThreeIcon,
+} from 'react-icons/fa';
 
 const iconStyle = {
    display: 'flex',
@@ -11,6 +17,7 @@ const iconStyle = {
    alignItems: 'center',
    minHeight: '48px',
    minWidth: '48px',
+   width: '100%',
 };
 
 const showSideMenuTitle = {
@@ -24,38 +31,44 @@ const Sidebar = () => {
    return (
       <SidebarWrapper>
          <SideMenuWrapper>
-            <Link to="/map">
+            <StyleLink to="/map">
                <SideMenu>
-                  <div style={iconStyle}>
-                     <MapIcon>icon</MapIcon>
-                  </div>
+                  <motion.div whileHover={{ scale: 1.5 }} style={iconStyle}>
+                     <MapIcon size={21}>icon</MapIcon>
+                  </motion.div>
                   <SideMenuButtonText>MAP</SideMenuButtonText>
                </SideMenu>
-            </Link>
+            </StyleLink>
          </SideMenuWrapper>
          <SideMenuWrapper>
-            <SideMenu>
-               <div style={iconStyle}>
-                  <MapIcon>icon</MapIcon>
-               </div>
-               <SideMenuButtonText>MENU2</SideMenuButtonText>
-            </SideMenu>
+            <StyleLink to="/nft">
+               <SideMenu>
+                  <motion.div whileHover={{ scale: 1.5 }} style={iconStyle}>
+                     <NftIcon size={21}>icon</NftIcon>
+                  </motion.div>
+                  <SideMenuButtonText>NFT</SideMenuButtonText>
+               </SideMenu>
+            </StyleLink>
          </SideMenuWrapper>
          <SideMenuWrapper>
-            <SideMenu>
-               <div style={iconStyle}>
-                  <MapIcon>icon</MapIcon>
-               </div>
-               <SideMenuButtonText>MENU3</SideMenuButtonText>
-            </SideMenu>
+            <StyleLink to="/mynft">
+               <SideMenu>
+                  <motion.div whileHover={{ scale: 1.5 }} style={iconStyle}>
+                     <CoinIcon size={21}>icon</CoinIcon>
+                  </motion.div>
+                  <SideMenuButtonText>MyNFT</SideMenuButtonText>
+               </SideMenu>
+            </StyleLink>
          </SideMenuWrapper>
          <SideMenuWrapper>
-            <SideMenu>
-               <div style={iconStyle}>
-                  <MapIcon>icon</MapIcon>
-               </div>
-               <SideMenuButtonText>MENU4</SideMenuButtonText>
-            </SideMenu>
+            <StyleLink to="/three">
+               <SideMenu>
+                  <motion.div whileHover={{ scale: 1.5 }} style={iconStyle}>
+                     <ThreeIcon size={21}>icon</ThreeIcon>
+                  </motion.div>
+                  <SideMenuButtonText>Model</SideMenuButtonText>
+               </SideMenu>
+            </StyleLink>
          </SideMenuWrapper>
       </SidebarWrapper>
    );
@@ -100,4 +113,10 @@ const SideMenuButtonText = styled.p`
    text-align: left;
 `;
 
+const StyleLink = styled(Link)`
+   color: rgba(0, 222, 199, 1);
+   // box-sizing: border-box;
+   margin: 0 auto;
+   text-align: center;
+`;
 export default Sidebar;

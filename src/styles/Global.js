@@ -1,8 +1,8 @@
-import { createGlobalStyle } from "styled-components";
-import px2vw from "./px2vw";
+import { createGlobalStyle } from 'styled-components';
+import px2vw from './px2vw';
 
 const Global = createGlobalStyle`
-    * {
+  * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -17,14 +17,16 @@ const Global = createGlobalStyle`
       @media (min-width: 1024px) {
         font-size: ${px2vw(16)};
       }
-    }
-   body {
+  }
+  body {
     -ms-overflow-style: none;
     ::-webkit-scrollbar {
       display: none;
     }
   }
- 
+  a {
+    style: none;
+  }
 `;
 
 export default Global;

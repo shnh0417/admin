@@ -1,70 +1,132 @@
 import { useRef, useEffect, Suspense, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useQuery, useMutation, useQueryClient, QueryClient, QueryClientProvider } from 'react-query';
 
 import PageNavbar from './PageNavbar';
+
+import styled from 'styled-components';
 import { Container } from 'styles/LayoutStyles';
+
+import { loadImage, staticNaverMapApi } from 'data/mock/apiDataset';
+
+// Create a client
+const queryClient = new QueryClient();
 
 const Index = () => {
    const [isShowLandDetail, setIsShowLandDetail] = useState(false);
-   const getStaticMap = async () => {
-      fetch(
-         `https://naveropenapi.apigw.ntruss.com/map-static/v2/raster?crs=EPSG:4326&scale=1&format=png&w=375&h=258&markers=type:t|pos:126.9616187%2037.507435|label:%EB%8F%99%EC%9E%91%EA%B5%AC,%20%EC%84%9C%EC%B4%88%EA%B5%AC,%20%EA%B4%80%EC%95%85%EA%B5%AC&markers=type:t|color:blue|pos:126.96060539999999%2037.507685699999996|label:%EB%8F%99%EC%9E%91%EA%B5%AC,%20%EC%84%9C%EC%B4%88%EA%B5%AC,%20%EC%9A%A9%EC%82%B0%EA%B5%AC%20%EB%B0%A9%EB%A9%B4&markers=type:t|color:0xEE3A3A|pos:126.9616377%2037.506708950000004|label:%EB%8F%99%EC%9E%91%EA%B5%AC,%20%EC%84%9C%EC%B4%88%EA%B5%AC,%20%EC%9A%A9%EC%82%B0%EA%B5%AC%20%EB%B0%A9%EB%A9%B4`,
-         {
-            mode: 'cors',
-            crossDomain: true,
-            headers: {
-               'X-NCP-APIGW-API-KEY-ID': 'ap3an7tzrq',
-               'X-NCP-APIGW-API-KEY': 'Bg1IjN1iNnXZQgeJ5OnVyDooyHRFFtIfPlJcbSvw',
-               'Content-Type': 'application/json',
-            },
-         }
-      )
-         .then((response) => response.json())
-         .then((json) => console.log(json));
+   const getImages = async () => {
+      console.log('getStaticMap');
+      const images = await loadImage();
+      console.log(images);
    };
 
    const showLandDetail = () => {
       setIsShowLandDetail(!isShowLandDetail);
    };
+
+   const getNaverMap = async () => {
+      const res = await staticNaverMapApi();
+      console.log(await res.json());
+   };
+
    useEffect(() => {
-      //getStaticMap();
+      // getImages();
+      // getNaverMap();
    }, []);
+
+   console.log('isShowLandDetail : ', isShowLandDetail);
+
    return (
-      <Container>
-         <PageNavbar />
-         <div style={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
-            <div
-               style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  flex: 1,
-                  width: '300px',
-               }}>
-               <h3>text</h3>
-               <button onClick={showLandDetail}>show</button>
-            </div>
-         </div>
-         {!isShowLandDetail ? null : (
-            <div
-               style={{
-                  border: '1px solid #272727',
-                  flex: 'none',
-                  position: 'absolute',
-                  width: '300px',
-                  display: 'flex',
-                  right: '15px',
-                  height: '100vh',
-                  overflow: 'scroll',
-                  boxShadow:
-                     'rgba(146, 255, 0, 0.4) -5px 5px, rgba(146, 255, 0, 0.3) -10px 10px, rgba(146, 255, 0, 0.2) -15px 15px, rgba(146, 255, 0, 0.1) -20px 20px, rgba(146, 255, 0, 0.05) -25px 25px',
-               }}>
-               <div style={{ width: '100%' }}>
-                  <h3>title</h3>
+      <QueryClientProvider client={queryClient}>
+         <Container>
+            <PageNavbar />
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
+               <div
+                  style={{
+                     display: 'flex',
+                     justifyContent: 'center',
+                     alignItems: 'center',
+                     flex: 1,
+                     width: '300px',
+                  }}>
+                  <div>
+                     <NaverMaps></NaverMaps>
+                  </div>
+                  <div>
+                     <button onClick={showLandDetail}>show</button>
+                  </div>
                </div>
             </div>
-         )}
-      </Container>
+            <AnimatePresence>
+               {isShowLandDetail && (
+                  <StyledLandModal
+                     initial={{ opacity: 0 }}
+                     animate={{ opacity: 1 }}
+                     exit={{ opacity: 0 }}
+                     // transition={{ delay: 0.1 }}
+                     layoutScroll>
+                     <motion.div layout>
+                        <h3>title</h3>
+                        <div style={{ height: '2000px' }}></div>
+                     </motion.div>
+                  </StyledLandModal>
+               )}
+            </AnimatePresence>
+         </Container>
+      </QueryClientProvider>
    );
 };
+
+function NaverMaps() {
+   const naverMapRef = useRef();
+   //Access the client
+   // const queryClient = useQueryClient();
+   // const query = useQuery('naverMaps', staticNaverMapApi);
+
+   useEffect(() => {
+      const { naver } = window;
+      if (!naverMapRef.current || !naver) return;
+
+      // 지도에 표시할 위치의 위도와 경도 좌표를 파라미터로 넣어줍니다.
+      const location = new naver.maps.LatLng(37.5656, 126.9769);
+      const mapOptions = {
+         center: location,
+         zoom: 16,
+         zoomControl: true,
+         zoomControlOptions: {
+            position: naver.maps.Position.TOP_RIGHT,
+         },
+      };
+      const map = new naver.maps.Map(naverMapRef.current, mapOptions);
+      new naver.maps.Marker({
+         position: location,
+         map,
+      });
+   }, []);
+
+   return (
+      <>
+         <div>
+            <h1>NaverMap</h1>
+            <div ref={naverMapRef} style={{ width: '100vh', height: '500px', zIndex: '1' }}></div>
+         </div>
+      </>
+   );
+}
+
+const StyledLandModal = styled(motion.div)`
+   border: 1px solid #272727;
+   flex: none;
+   position: absolute;
+   width: 300px;
+   display: flex;
+   right: 15px;
+   height: 100vh;
+   padding: 5px 10px;
+   overflow: scroll;
+   z-index: 1000;
+   box-shadow: rgba(146, 255, 0, 0.4) -5px 5px, rgba(146, 255, 0, 0.3) -10px 10px, rgba(146, 255, 0, 0.2) -15px 15px,
+      rgba(146, 255, 0, 0.1) -20px 20px, rgba(146, 255, 0, 0.05) -25px 25px;
+`;
 
 export default Index;
